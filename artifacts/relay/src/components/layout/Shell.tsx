@@ -36,7 +36,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="hidden xl:flex w-64 flex-col border-r bg-card h-full pt-6 pb-4 px-4 flex-none">
         <div className="flex items-center gap-3 mb-8 px-2">
-          <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center text-lime font-bold text-sm">R</div>
+          <img src="/logo.png" alt="Relay" className="w-8 h-8 rounded-lg object-cover" />
           <span className="font-extrabold text-lg">Relay</span>
         </div>
         
@@ -64,7 +64,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
       {/* Tablet Rail */}
       <aside className="hidden md:flex xl:hidden w-20 flex-col items-center border-r bg-card h-full py-6 flex-none">
-        <div className="w-10 h-10 rounded-xl bg-ink flex items-center justify-center text-lime font-bold text-base mb-8">R</div>
+        <img src="/logo.png" alt="Relay" className="w-10 h-10 rounded-xl object-cover mb-8" />
         
         <nav className="flex flex-col gap-4 flex-1">
           {navItems.map((item) => {
