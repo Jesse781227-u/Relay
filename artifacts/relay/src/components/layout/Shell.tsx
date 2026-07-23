@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Users, Megaphone, Store, MoreHorizontal, Bell, Search, Plus, X, Menu, Settings, HelpCircle, CreditCard, ChevronRight, LogOut } from 'lucide-react';
+import { Home, Users, Megaphone, Store, MoreHorizontal, Bell, Search, Plus, X, Menu, Settings, HelpCircle, CreditCard, ChevronRight, LogOut, ShoppingBag } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { MOCK_NOTIFICATIONS } from '@/lib/data';
 
