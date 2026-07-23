@@ -48,7 +48,7 @@ export default function Home() {
   const heroContent = {
     Overview: {
       label: "Total Revenue",
-      period: "Nov 2023",
+      period: "July 2026",
       value: "₦4,250,000",
       trend: "+14.2%",
       trendLabel: "vs last month",
@@ -56,7 +56,7 @@ export default function Home() {
     },
     Weekly: {
       label: "This Week's Revenue",
-      period: "Nov 12 - 18",
+      period: "Jul 14 - 20",
       value: "₦845,000",
       trend: "+5.1%",
       trendLabel: "vs last week",
@@ -64,7 +64,7 @@ export default function Home() {
     },
     Analytic: {
       label: "Projected Revenue",
-      period: "Q4 2023",
+      period: "Q3 2026",
       value: "₦12,800,000",
       trend: "-2.4%",
       trendLabel: "vs target",
