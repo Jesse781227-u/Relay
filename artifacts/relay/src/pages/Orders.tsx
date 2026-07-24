@@ -8,6 +8,7 @@ import {
   Tag, Package, Puzzle, Pencil, Trash2, UtensilsCrossed,
   ChevronDown, Star
 } from 'lucide-react';
+import { StorefrontTheme, themes } from '../storefront/themes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,26 +65,8 @@ const INITIAL_ORDERS: Order[] = [
 
 // ─── Storefront Data ──────────────────────────────────────────────────────────
 
-type TemplateId = 'kitchen-table' | 'fresh-menu' | 'corner-bistro' | 'night-market' | 'bold-shelf' | 'soft-petals' | 'minimal-white' | 'sunset-glow';
-type CategoryFilter = 'All' | 'Restaurant' | 'Fashion' | 'Beauty' | 'Retail' | 'Services';
-
-interface StorefrontTemplate {
-  id: TemplateId; name: string; category: Exclude<CategoryFilter, 'All'>;
-  gradient: string; textColor?: string; bgColor?: string; accent: string;
-}
-
-const STOREFRONT_TEMPLATES: StorefrontTemplate[] = [
-  { id: 'kitchen-table', name: 'Kitchen Table', category: 'Restaurant', gradient: 'linear-gradient(145deg,#EAF7D6 0%,#A79AFB 100%)', accent: '#5B4FE8' },
-  { id: 'fresh-menu',    name: 'Fresh Menu',    category: 'Restaurant', gradient: 'linear-gradient(145deg,#FBD2E1 0%,#F7A9C4 100%)', accent: '#E83D7C' },
-  { id: 'corner-bistro', name: 'Corner Bistro', category: 'Restaurant', gradient: 'linear-gradient(145deg,#FFF6DE 0%,#F4D03F 100%)', accent: '#C87F0A' },
-  { id: 'night-market',  name: 'Night Market',  category: 'Restaurant', gradient: 'linear-gradient(145deg,#1B2942 0%,#16213E 100%)', textColor: '#fff', bgColor: '#1B2942', accent: '#A79AFB' },
-  { id: 'bold-shelf',    name: 'Bold Shelf',    category: 'Retail',     gradient: 'linear-gradient(145deg,#E8F0FE 0%,#4E7CF6 100%)', accent: '#4E7CF6' },
-  { id: 'soft-petals',   name: 'Soft Petals',   category: 'Beauty',     gradient: 'linear-gradient(145deg,#FFF0F5 0%,#F7A9C4 100%)', accent: '#E83D7C' },
-  { id: 'minimal-white', name: 'Clean & Bright', category: 'Services',  gradient: 'linear-gradient(145deg,#F8F9FA 0%,#E8EDF5 100%)', accent: '#16213E' },
-  { id: 'sunset-glow',   name: 'Sunset',        category: 'Fashion',    gradient: 'linear-gradient(145deg,#FFE8D6 0%,#FF8C42 100%)', accent: '#D4540A' },
-];
-
-const CATEGORY_FILTERS: CategoryFilter[] = ['All', 'Restaurant', 'Fashion', 'Beauty', 'Retail', 'Services'];
+type CategoryFilter = 'All' | 'Restaurant & Café' | 'Fashion' | 'Beauty' | 'Retail' | 'Services';
+const CATEGORY_FILTERS: CategoryFilter[] = ['All', 'Restaurant & Café', 'Fashion', 'Beauty', 'Retail', 'Services'];
 
 const ACCENT_COLORS = [
   { id: 'purple', hex: '#5B4FE8', label: 'Violet' },
@@ -319,26 +302,35 @@ function OrdersKanban() {
 
 // ─── Phone Preview Component ──────────────────────────────────────────────────
 
-function PhonePreview({ businessName, accentColor, templateMeta, products, visibleProducts }: {
+function PhonePreview({ businessName, accentColor, theme, products, visibleProducts }: {
   businessName: string;
   accentColor: typeof ACCENT_COLORS[0];
-  templateMeta?: StorefrontTemplate;
+  theme?: StorefrontTheme;
   products: CatalogProduct[];
   visibleProducts: Record<string, boolean>;
 }) {
   const shown = products.filter(p => visibleProducts[p.id] ?? true).slice(0, 6);
-  const accent = accentColor.hex;
-  const isDark = accent === '#16213E';
-  const textOnAccent = isDark || accent === '#5B4FE8' ? '#fff' : '#16213E';
+  const accent    = theme ? theme.colors.accent    : accentColor.hex;
+  const accentInk = theme ? theme.colors.accentInk : (accentColor.id === 'ink' || accentColor.id === 'purple' ? '#fff' : '#16213E');
+  const bg        = theme ? theme.colors.bg        : '#ffffff';
+  const surface   = theme ? theme.colors.surface   : '#ffffff';
+  const ink       = theme ? theme.colors.ink       : '#16213E';
+  const muted     = theme ? theme.colors.muted     : '#8A8F98';
+  const border    = theme ? theme.colors.border    : '#ECEDF1';
+  const heroGrad  = theme
+    ? `linear-gradient(145deg, ${theme.colors.bg} 0%, ${theme.colors.accent} 100%)`
+    : `linear-gradient(145deg, ${accentColor.hex}44, ${accentColor.hex})`;
+  const cardRadius = theme?.radius.card ?? '12px';
+  const btnRadius  = theme?.radius.button ?? '999px';
 
   return (
-    <div className="w-[220px] rounded-[36px] overflow-hidden shadow-[0_20px_60px_rgba(22,33,62,0.25)] border-[3px] border-[#16213E]/20 bg-white flex-none mx-auto">
+    <div className="w-[220px] rounded-[36px] overflow-hidden shadow-[0_20px_60px_rgba(22,33,62,0.25)] border-[3px] border-[#16213E]/20 flex-none mx-auto" style={{ background: bg }}>
       {/* Notch */}
-      <div className="h-6 bg-[#16213E] flex items-center justify-center rounded-b-none">
-        <div className="w-14 h-3 bg-[#16213E] rounded-full" />
+      <div className="h-6 flex items-center justify-center" style={{ background: ink }}>
+        <div className="w-14 h-3 rounded-full" style={{ background: ink }} />
       </div>
       {/* Cover */}
-      <div className="h-24 relative" style={{ background: templateMeta?.gradient || `linear-gradient(145deg, ${accent}44, ${accent})` }}>
+      <div className="h-24 relative" style={{ background: heroGrad }}>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         <div className="absolute bottom-2.5 left-3 flex items-center gap-2">
           <div className="w-9 h-9 rounded-full border-2 border-white/50 flex items-center justify-center font-extrabold text-white text-xs shadow" style={{ background: accent }}>
@@ -348,34 +340,34 @@ function PhonePreview({ businessName, accentColor, templateMeta, products, visib
         </div>
       </div>
       {/* Category bar */}
-      <div className="flex gap-1.5 px-2.5 py-2 bg-white border-b overflow-x-auto scrollbar-hide">
+      <div className="flex gap-1.5 px-2.5 py-2 border-b overflow-x-auto scrollbar-hide" style={{ background: surface, borderColor: border }}>
         {['All', 'Food', 'Drinks'].map((c, i) => (
-          <span key={c} className="text-[9px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap flex-none" style={i === 0 ? { background: accent, color: textOnAccent } : { background: '#F5F6F8', color: '#8A8F98' }}>{c}</span>
+          <span key={c} className="text-[9px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap flex-none" style={i === 0 ? { background: accent, color: accentInk } : { background: bg, color: muted }}>{c}</span>
         ))}
       </div>
       {/* Products */}
-      <div className="p-2 grid grid-cols-2 gap-1.5 bg-[#F5F6F8] min-h-[120px]">
+      <div className="p-2 grid grid-cols-2 gap-1.5 min-h-[120px]" style={{ background: bg }}>
         {shown.map(p => (
-          <div key={p.id} className="bg-white rounded-xl overflow-hidden shadow-sm">
-            <div className="h-12 bg-[#F5F6F8] flex items-center justify-center">
-              <UtensilsCrossed size={13} className="text-muted-foreground opacity-25" />
+          <div key={p.id} className="overflow-hidden shadow-sm" style={{ background: surface, borderRadius: cardRadius }}>
+            <div className="h-12 flex items-center justify-center" style={{ background: bg }}>
+              <UtensilsCrossed size={13} className="opacity-20" style={{ color: muted }} />
             </div>
             <div className="p-1.5">
-              <div className="text-[9px] font-bold text-ink truncate leading-tight">{p.name}</div>
+              <div className="text-[9px] font-bold truncate leading-tight" style={{ color: ink }}>{p.name}</div>
               <div className="text-[9px] font-extrabold mt-0.5" style={{ color: accent }}>₦{p.price.toLocaleString()}</div>
             </div>
           </div>
         ))}
         {shown.length === 0 && (
-          <div className="col-span-2 flex items-center justify-center py-6 text-[10px] text-muted-foreground font-semibold">No items selected</div>
+          <div className="col-span-2 flex items-center justify-center py-6 text-[10px] font-semibold" style={{ color: muted }}>No items selected</div>
         )}
       </div>
       {/* Cart */}
-      <div className="px-2.5 pb-2.5 pt-2 bg-white">
-        <div className="w-full py-2 rounded-full text-[10px] font-extrabold text-center" style={{ background: accent, color: textOnAccent }}>View cart (0)</div>
+      <div className="px-2.5 pb-2.5 pt-2" style={{ background: surface }}>
+        <div className="w-full py-2 text-[10px] font-extrabold text-center" style={{ background: accent, color: accentInk, borderRadius: btnRadius }}>View cart (0)</div>
       </div>
       {/* Home bar */}
-      <div className="h-5 bg-white flex items-center justify-center">
+      <div className="h-5 flex items-center justify-center" style={{ background: surface }}>
         <div className="w-16 h-1 bg-black/15 rounded-full" />
       </div>
     </div>
@@ -658,7 +650,7 @@ function ProductsBuilder({ products, setProducts, categories, setCategories, add
 function StorefrontBuilder() {
   const [step, setStep] = useState<StorefrontStep>('templates');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('All');
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateId | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [accentColor, setAccentColor] = useState(ACCENT_COLORS[0]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [businessName, setBusinessName] = useState("Amara's Kitchen");
@@ -670,8 +662,8 @@ function StorefrontBuilder() {
   const [copyDone, setCopyDone] = useState(false);
 
   const storeUrl = `${businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}.myrelay.shop`;
-  const selectedTemplateMeta = STOREFRONT_TEMPLATES.find(t => t.id === selectedTemplate);
-  const filteredTemplates = categoryFilter === 'All' ? STOREFRONT_TEMPLATES : STOREFRONT_TEMPLATES.filter(t => t.category === categoryFilter);
+  const selectedTemplateMeta = themes.find(t => t.id === selectedTemplate);
+  const filteredTemplates = categoryFilter === 'All' ? themes : themes.filter(t => t.category === categoryFilter);
   const visibleCount = products.filter(p => visibleProducts[p.id] ?? true).length;
 
   const STEPS: { id: StorefrontStep; label: string }[] = [
@@ -698,7 +690,7 @@ function StorefrontBuilder() {
       {!hidePreview && (
         <div className="hidden lg:flex w-[340px] xl:w-[380px] flex-none border-l bg-gradient-to-b from-[#F5F6F8] to-[#ECEDF1] items-center justify-center p-8 flex-col gap-4">
           <p className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-widest">Live preview</p>
-          <PhonePreview businessName={businessName} accentColor={accentColor} templateMeta={selectedTemplateMeta} products={products} visibleProducts={visibleProducts} />
+          <PhonePreview businessName={businessName} accentColor={accentColor} theme={selectedTemplateMeta} products={products} visibleProducts={visibleProducts} />
           {selectedTemplateMeta && (
             <p className="text-[11px] font-semibold text-muted-foreground text-center">{selectedTemplateMeta.name} template · {accentColor.label} accent</p>
           )}
@@ -743,10 +735,23 @@ function StorefrontBuilder() {
           {/* Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredTemplates.map(t => (
-              <button key={t.id} onClick={() => setSelectedTemplate(t.id)} className={`rounded-[24px] overflow-hidden text-left border-2 transition-all hover:scale-[1.02] hover:shadow-md ${selectedTemplate === t.id ? 'border-[#5B4FE8] shadow-lg ring-1 ring-[#5B4FE8]/20' : 'border-[#ECEDF1] shadow-sm'}`} style={{ background: t.bgColor || '#fff' }}>
-                <div className="h-[90px] w-full" style={{ background: t.gradient }} />
-                <div className="px-3.5 py-3 flex items-center justify-between" style={{ background: t.bgColor || '#fff' }}>
-                  <span className="text-xs font-extrabold leading-tight" style={{ color: t.textColor || '#16181D' }}>{t.name}</span>
+              <button key={t.id} onClick={() => setSelectedTemplate(t.id)} className={`rounded-[24px] overflow-hidden text-left border-2 transition-all hover:scale-[1.02] hover:shadow-md ${selectedTemplate === t.id ? 'border-[#5B4FE8] shadow-lg ring-1 ring-[#5B4FE8]/20' : 'border-[#ECEDF1] shadow-sm'}`} style={{ background: t.colors.bg }}>
+                {/* Swatch preview */}
+                <div className="h-[90px] w-full relative overflow-hidden" style={{ background: `linear-gradient(145deg, ${t.colors.bg} 0%, ${t.colors.accent} 100%)` }}>
+                  <div className="absolute bottom-2 left-2 right-2 flex gap-1">
+                    <div className="flex-1 overflow-hidden flex items-end p-1" style={{ background: t.colors.surface, height: 28, borderRadius: t.radius.card }}>
+                      <span className="text-[7px] font-bold truncate" style={{ color: t.colors.ink }}>Product</span>
+                    </div>
+                    <div className="flex-1 overflow-hidden flex items-end p-1" style={{ background: t.colors.surface, height: 28, borderRadius: t.radius.card }}>
+                      <span className="text-[7px] font-extrabold" style={{ color: t.colors.accent }}>₦2,500</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-3.5 py-3 flex items-center justify-between" style={{ background: t.colors.bg }}>
+                  <div>
+                    <span className="text-xs font-extrabold leading-tight block" style={{ color: t.colors.ink }}>{t.name}</span>
+                    <span className="text-[9px] font-semibold" style={{ color: t.colors.muted }}>{t.tagline}</span>
+                  </div>
                   {selectedTemplate === t.id && <span className="w-5 h-5 rounded-full bg-[#5B4FE8] flex items-center justify-center flex-none"><Check size={10} className="text-white" /></span>}
                 </div>
               </button>
@@ -785,7 +790,7 @@ function StorefrontBuilder() {
             </div>
             <div className="bg-white rounded-[20px] p-5 border border-[#ECEDF1] shadow-sm">
               <div className="text-xs font-extrabold text-muted-foreground uppercase tracking-wider mb-4">Cover image</div>
-              <div className="h-[60px] w-full rounded-[14px] flex items-center justify-center gap-2 border-2 border-dashed border-[#ECEDF1] cursor-pointer hover:bg-[#F8F9FB] transition-colors" style={{ background: selectedTemplateMeta?.gradient }}>
+              <div className="h-[60px] w-full rounded-[14px] flex items-center justify-center gap-2 border-2 border-dashed border-[#ECEDF1] cursor-pointer hover:bg-[#F8F9FB] transition-colors" style={{ background: selectedTemplateMeta ? `linear-gradient(145deg, ${selectedTemplateMeta.colors.bg}, ${selectedTemplateMeta.colors.accent})` : undefined }}>
                 <ImageIcon size={14} className="text-white/60" />
                 <span className="text-[10px] font-bold text-white/80">Upload or use template</span>
               </div>
@@ -887,7 +892,7 @@ function StorefrontBuilder() {
 
           {/* Device frame centered */}
           <div className="flex flex-col items-center gap-4 py-4">
-            <PhonePreview businessName={businessName} accentColor={accentColor} templateMeta={selectedTemplateMeta} products={products} visibleProducts={visibleProducts} />
+            <PhonePreview businessName={businessName} accentColor={accentColor} theme={selectedTemplateMeta} products={products} visibleProducts={visibleProducts} />
             <p className="text-xs text-muted-foreground text-center">{visibleCount} item{visibleCount !== 1 ? 's' : ''} visible · {accentColor.label} accent · {selectedTemplateMeta?.name ?? 'No template'}</p>
           </div>
 
