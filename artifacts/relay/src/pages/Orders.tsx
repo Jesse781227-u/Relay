@@ -714,12 +714,12 @@ function StylePreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in"
+      className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6 animate-in fade-in"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-3xl rounded-t-[32px] md:rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-8 duration-300"
-        style={{ background: bg, maxHeight: '95dvh' }}
+        className="w-full md:max-w-4xl rounded-t-[28px] md:rounded-[28px] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-8 duration-300 h-[96dvh] md:h-auto md:max-h-[92dvh]"
+        style={{ background: bg }}
         onClick={e => e.stopPropagation()}
       >
         {/* ── Header ── */}
@@ -758,11 +758,11 @@ function StylePreviewModal({
         </div>
 
         {/* ── iframe: the real HTML design ── */}
-        <div className="flex-1 overflow-hidden relative" style={{ minHeight: 480 }}>
+        <div className="flex-1 overflow-hidden relative min-h-0">
           {/* Scroll hint */}
           <div
             className="absolute bottom-3 right-3 z-10 text-[10px] font-bold px-2.5 py-1.5 rounded-full pointer-events-none shadow-md"
-            style={{ background: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.55)', color: isDark ? '#fff' : '#fff' }}
+            style={{ background: 'rgba(0,0,0,0.6)', color: '#fff' }}
           >
             Scroll to see all 5 screens →
           </div>
@@ -770,8 +770,8 @@ function StylePreviewModal({
             key={theme.id}
             src={previewSrc}
             title={`${theme.name} storefront preview`}
-            className="w-full h-full border-none"
-            style={{ display: 'block', height: '100%', minHeight: 480 }}
+            className="w-full border-none"
+            style={{ display: 'block', height: '100%' }}
             sandbox="allow-same-origin allow-scripts"
           />
         </div>
