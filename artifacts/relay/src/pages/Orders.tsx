@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Plus, MoreHorizontal, ShoppingBag, Clock, CheckCircle2,
   Store, ShoppingCart, ChevronLeft, ChevronRight,
@@ -691,6 +691,59 @@ function ProductsBuilder({ products, setProducts, categories, setCategories, add
 
 // ─── Style Preview Modal ──────────────────────────────────────────────────────
 
+// ─── Template Card Preview (scaled iframe thumbnail) ──────────────────────────
+
+const TMPL_IFRAME_W = 420;   // iframe render width – captures first phone (390px) + left padding
+const TMPL_PHONE_TOP = 200;  // approx y-offset where the first phone begins in the template HTML
+const TMPL_PHONE_H = 844;    // phone height per the template CSS
+
+function TemplateCardPreview({ theme }: { theme: StorefrontTheme }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.4);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => setScale(el.offsetWidth / TMPL_IFRAME_W);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Show the top half of the phone screen so the hero + first product row is visible
+  const cardH = Math.round((TMPL_PHONE_H / 2) * scale);
+  const src   = `${import.meta.env.BASE_URL}styles/${theme.id}.html`;
+
+  return (
+    <div ref={ref} style={{ width: '100%', height: `${cardH}px`, overflow: 'hidden', position: 'relative' }}>
+      <iframe
+        src={src}
+        title={theme.name}
+        tabIndex={-1}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: `${TMPL_IFRAME_W}px`,
+          height: `${TMPL_PHONE_TOP + TMPL_PHONE_H}px`,
+          border: 'none',
+          pointerEvents: 'none',
+          transformOrigin: 'top left',
+          /* scale(s) translateY(-PHONE_TOP): applied right-to-left, the
+             element shifts up by PHONE_TOP in local space then scales,
+             so the container window reveals the iframe starting at y=PHONE_TOP */
+          transform: `scale(${scale}) translateY(-${TMPL_PHONE_TOP}px)`,
+        }}
+        sandbox="allow-same-origin"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
+// ─── Style Preview Modal ───────────────────────────────────────────────────────
+
 function StylePreviewModal({
   theme,
   isSelected,
@@ -911,7 +964,6 @@ function StorefrontBuilder() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredTemplates.map(t => {
               const isDarkCard = t.colors.bg.startsWith('#0') || t.colors.bg.startsWith('#1');
-              const sampleProd = SAMPLE_PRODUCTS_BY_TYPE[t.sample]?.[0];
               return (
                 <button
                   key={t.id}
@@ -920,28 +972,8 @@ function StorefrontBuilder() {
                   style={{ background: t.colors.bg }}
                   title={`Preview ${t.name}`}
                 >
-                  {/* Swatch preview */}
-                  <div className="h-[100px] w-full relative overflow-hidden" style={{ background: `linear-gradient(145deg, ${t.colors.bg} 0%, ${t.colors.accent} 100%)` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                    {/* Mini product cards */}
-                    <div className="absolute bottom-2 left-2 right-2 flex gap-1">
-                      <div className="flex-1 overflow-hidden" style={{ background: t.colors.surface, borderRadius: t.radius.card, padding: '4px 5px' }}>
-                        <div className="h-5 mb-0.5 rounded-sm" style={{ background: isDarkCard ? 'rgba(255,255,255,0.07)' : `${t.colors.accent}20` }} />
-                        <div className="text-[6px] font-bold truncate leading-tight" style={{ color: t.colors.ink }}>{sampleProd?.name ?? 'Item'}</div>
-                        <div className="text-[6px] font-extrabold" style={{ color: t.colors.accent }}>₦{(sampleProd?.price ?? 2500).toLocaleString()}</div>
-                      </div>
-                      <div className="flex-1 overflow-hidden" style={{ background: t.colors.surface, borderRadius: t.radius.card, padding: '4px 5px' }}>
-                        <div className="h-5 mb-0.5 rounded-sm" style={{ background: isDarkCard ? 'rgba(255,255,255,0.07)' : `${t.colors.accent}20` }} />
-                        <div className="text-[6px] font-bold truncate leading-tight" style={{ color: t.colors.ink }}>{SAMPLE_PRODUCTS_BY_TYPE[t.sample]?.[1]?.name ?? 'Item'}</div>
-                        <div className="text-[6px] font-extrabold" style={{ color: t.colors.accent }}>₦{(SAMPLE_PRODUCTS_BY_TYPE[t.sample]?.[1]?.price ?? 3000).toLocaleString()}</div>
-                      </div>
-                    </div>
-                    {/* Accent dot cluster top-right */}
-                    <div className="absolute top-2 right-2 flex gap-0.5">
-                      <div className="w-2 h-2 rounded-full" style={{ background: t.colors.accent }} />
-                      <div className="w-2 h-2 rounded-full opacity-50" style={{ background: t.colors.accent }} />
-                    </div>
-                  </div>
+                  {/* Real template preview (scaled iframe) */}
+                  <TemplateCardPreview theme={t} />
                   <div className="px-3.5 py-3 flex items-center justify-between" style={{ background: t.colors.bg }}>
                     <div className="min-w-0">
                       <span className="text-xs font-extrabold leading-tight block truncate" style={{ color: t.colors.ink }}>{t.name}</span>
