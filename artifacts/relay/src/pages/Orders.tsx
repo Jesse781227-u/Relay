@@ -692,28 +692,30 @@ function ProductsBuilder({ products, setProducts, categories, setCategories, add
 // ─── Style Preview Modal ──────────────────────────────────────────────────────
 
 // ─── Template Card Preview (scaled iframe thumbnail) ──────────────────────────
+// Each template HTML file accepts ?thumb=1 which strips the page header/extra
+// frames and renders only the first .phone element at its native 390×844 size.
+// We scale that iframe to fill the card width, preserving the phone aspect ratio.
 
-const TMPL_IFRAME_W = 420;   // iframe render width – captures first phone (390px) + left padding
-const TMPL_PHONE_TOP = 200;  // approx y-offset where the first phone begins in the template HTML
-const TMPL_PHONE_H = 844;    // phone height per the template CSS
+const TMPL_PHONE_W = 390;
+const TMPL_PHONE_H = 844;
 
 function TemplateCardPreview({ theme }: { theme: StorefrontTheme }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0.4);
+  const [scale, setScale] = useState(0.42);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const measure = () => setScale(el.offsetWidth / TMPL_IFRAME_W);
+    const measure = () => setScale(el.offsetWidth / TMPL_PHONE_W);
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Show the top half of the phone screen so the hero + first product row is visible
-  const cardH = Math.round((TMPL_PHONE_H / 2) * scale);
-  const src   = `${import.meta.env.BASE_URL}styles/${theme.id}.html`;
+  // Full phone aspect ratio — user asked to use vertical scroll space
+  const cardH = Math.round(TMPL_PHONE_H * scale);
+  const src   = `${import.meta.env.BASE_URL}styles/${theme.id}.html?thumb=1`;
 
   return (
     <div ref={ref} style={{ width: '100%', height: `${cardH}px`, overflow: 'hidden', position: 'relative' }}>
@@ -725,17 +727,14 @@ function TemplateCardPreview({ theme }: { theme: StorefrontTheme }) {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: `${TMPL_IFRAME_W}px`,
-          height: `${TMPL_PHONE_TOP + TMPL_PHONE_H}px`,
+          width: `${TMPL_PHONE_W}px`,
+          height: `${TMPL_PHONE_H}px`,
           border: 'none',
           pointerEvents: 'none',
           transformOrigin: 'top left',
-          /* scale(s) translateY(-PHONE_TOP): applied right-to-left, the
-             element shifts up by PHONE_TOP in local space then scales,
-             so the container window reveals the iframe starting at y=PHONE_TOP */
-          transform: `scale(${scale}) translateY(-${TMPL_PHONE_TOP}px)`,
+          transform: `scale(${scale})`,
         }}
-        sandbox="allow-same-origin"
+        sandbox="allow-same-origin allow-scripts"
         loading="lazy"
       />
     </div>
@@ -961,7 +960,7 @@ function StorefrontBuilder() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {filteredTemplates.map(t => {
               const isDarkCard = t.colors.bg.startsWith('#0') || t.colors.bg.startsWith('#1');
               return (
