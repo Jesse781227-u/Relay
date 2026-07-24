@@ -702,172 +702,113 @@ function StylePreviewModal({
   onSelect: () => void;
   onClose: () => void;
 }) {
-  const sampleProds = SAMPLE_PRODUCTS_BY_TYPE[theme.sample] ?? SAMPLE_PRODUCTS_BY_TYPE.food;
   const accent    = theme.colors.accent;
   const accentInk = theme.colors.accentInk;
   const bg        = theme.colors.bg;
-  const surface   = theme.colors.surface;
   const ink       = theme.colors.ink;
   const muted     = theme.colors.muted;
   const border    = theme.colors.border;
-  const heroGrad  = `linear-gradient(145deg, ${bg} 0%, ${accent} 100%)`;
-  const cardRadius = theme.radius.card;
-  const btnRadius  = theme.radius.button;
+  const btnRadius = theme.radius.button;
   const isDark    = bg.startsWith('#0') || bg.startsWith('#1');
+  const previewSrc = `${import.meta.env.BASE_URL}styles/${theme.id}.html`;
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6 animate-in fade-in"
+      className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl rounded-t-[36px] md:rounded-[36px] shadow-2xl flex flex-col max-h-[92dvh] overflow-hidden animate-in slide-in-from-bottom-8 duration-300"
-        style={{ background: bg }}
+        className="w-full max-w-3xl rounded-t-[32px] md:rounded-[32px] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-8 duration-300"
+        style={{ background: bg, maxHeight: '95dvh' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 flex-none" style={{ borderBottom: `1px solid ${border}` }}>
+        {/* ── Header ── */}
+        <div
+          className="flex items-center justify-between px-5 pt-5 pb-4 flex-none"
+          style={{ borderBottom: `1px solid ${border}` }}
+        >
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-            style={{ background: isDark ? 'rgba(255,255,255,0.1)' : '#00000010', color: ink }}
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-70"
+            style={{ background: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.07)', color: ink }}
           >
             <X size={18} />
           </button>
-          <div className="text-center">
-            <div className="text-[10px] font-extrabold uppercase tracking-widest" style={{ color: muted }}>{theme.category}</div>
-            <div className="text-base font-extrabold" style={{ color: ink }}>{theme.name}</div>
+
+          <div className="text-center min-w-0 px-3">
+            <div className="text-[10px] font-extrabold uppercase tracking-widest truncate" style={{ color: muted }}>
+              {theme.category}
+            </div>
+            <div className="text-base font-extrabold leading-tight" style={{ color: ink }}>
+              {theme.name}
+            </div>
+            <div className="text-[11px] mt-0.5" style={{ color: muted }}>{theme.tagline}</div>
           </div>
-          <div className="w-9" />
+
+          {/* Colour swatches */}
+          <div className="flex gap-1.5 flex-none">
+            {[bg, theme.colors.surface, accent, muted].map((c, i) => (
+              <div
+                key={i}
+                className="w-5 h-5 rounded-full border shadow-sm"
+                style={{ background: c, borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.12)' }}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto">
-
-          {/* Hero swatch — full-width gradient banner */}
-          <div className="h-36 relative flex-none" style={{ background: heroGrad }}>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
-            <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
-              <div>
-                <div className="text-white font-extrabold text-xl drop-shadow-sm leading-tight">{theme.name}</div>
-                <div className="text-white/80 text-xs font-semibold mt-0.5">{theme.tagline}</div>
-              </div>
-              <div className="flex gap-1.5">
-                {[bg, surface, accent, muted].map((c, i) => (
-                  <div key={i} className="w-6 h-6 rounded-full border-2 border-white/40 shadow-sm" style={{ background: c }} />
-                ))}
-              </div>
-            </div>
+        {/* ── iframe: the real HTML design ── */}
+        <div className="flex-1 overflow-hidden relative" style={{ minHeight: 480 }}>
+          {/* Scroll hint */}
+          <div
+            className="absolute bottom-3 right-3 z-10 text-[10px] font-bold px-2.5 py-1.5 rounded-full pointer-events-none shadow-md"
+            style={{ background: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.55)', color: isDark ? '#fff' : '#fff' }}
+          >
+            Scroll to see all 5 screens →
           </div>
+          <iframe
+            key={theme.id}
+            src={previewSrc}
+            title={`${theme.name} storefront preview`}
+            className="w-full h-full border-none"
+            style={{ display: 'block', height: '100%', minHeight: 480 }}
+            sandbox="allow-same-origin allow-scripts"
+          />
+        </div>
 
-          {/* "Perfect for" tags */}
-          <div className="px-6 pt-4 pb-2 flex flex-wrap gap-2">
+        {/* ── "Perfect for" tags + CTA ── */}
+        <div className="flex-none px-5 pt-4 pb-5" style={{ borderTop: `1px solid ${border}`, background: bg }}>
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1.5 mb-4">
             {theme.perfectFor.map(tag => (
-              <span key={tag} className="text-xs font-bold px-3 py-1.5 rounded-full border" style={{ color: ink, borderColor: border, background: surface }}>
+              <span
+                key={tag}
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full border"
+                style={{ color: ink, borderColor: border, background: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)' }}
+              >
                 {tag}
               </span>
             ))}
           </div>
 
-          {/* Live phone preview */}
-          <div className="px-6 py-4 flex flex-col items-center gap-3">
-            <p className="text-[10px] font-extrabold uppercase tracking-widest" style={{ color: muted }}>Storefront preview</p>
-
-            {/* Expanded phone frame */}
-            <div
-              className="w-[260px] rounded-[40px] overflow-hidden shadow-[0_24px_72px_rgba(0,0,0,0.3)] border-[3px]"
-              style={{ background: bg, borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(22,33,62,0.18)' }}
-            >
-              {/* Status bar / notch */}
-              <div className="h-7 flex items-center justify-center" style={{ background: ink }}>
-                <div className="w-16 h-3.5 rounded-full" style={{ background: ink }} />
-              </div>
-
-              {/* Hero cover */}
-              <div className="h-28 relative" style={{ background: heroGrad }}>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                <div className="absolute bottom-3 left-4 flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-full border-2 border-white/50 flex items-center justify-center font-extrabold text-white text-xs shadow-md" style={{ background: accent }}>
-                    AK
-                  </div>
-                  <div>
-                    <div className="text-white font-extrabold text-[11px] drop-shadow-sm">Amara's Kitchen</div>
-                    <div className="text-white/70 text-[9px] font-semibold">⭐ 4.8 · Open now</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Category bar */}
-              <div className="flex gap-1.5 px-3 py-2 overflow-x-hidden" style={{ background: surface, borderBottom: `1px solid ${border}` }}>
-                {['All', 'Featured', 'Popular'].map((c, i) => (
-                  <span key={c} className="text-[9px] font-extrabold px-2.5 py-1 rounded-full whitespace-nowrap flex-none" style={i === 0 ? { background: accent, color: accentInk } : { background: bg, color: muted, borderRadius: btnRadius }}>{c}</span>
-                ))}
-              </div>
-
-              {/* Product grid */}
-              <div className="p-2.5 grid gap-2" style={{ background: bg, gridTemplateColumns: theme.grid === 1 ? '1fr' : theme.grid === 3 ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)' }}>
-                {sampleProds.slice(0, theme.grid === 1 ? 3 : theme.grid === 3 ? 6 : 4).map(p => (
-                  <div key={p.name} className="overflow-hidden shadow-sm" style={{ background: surface, borderRadius: cardRadius }}>
-                    <div className="flex items-center justify-center" style={{ background: isDark ? 'rgba(255,255,255,0.05)' : `${accent}18`, height: theme.grid === 1 ? 36 : 44 }}>
-                      <div className="text-[8px] font-bold opacity-40" style={{ color: ink }}>img</div>
-                    </div>
-                    <div className="px-1.5 pb-1.5 pt-1">
-                      <div className="text-[8px] font-bold truncate leading-tight" style={{ color: ink }}>{p.name}</div>
-                      <div className="flex items-center justify-between mt-0.5">
-                        <div className="text-[8px] font-extrabold" style={{ color: accent }}>₦{p.price.toLocaleString()}</div>
-                        <div className="text-[7px] font-extrabold px-1.5 py-0.5 rounded-full" style={{ background: accent, color: accentInk, borderRadius: btnRadius }}>+</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA bar */}
-              <div className="px-3 pb-3 pt-1" style={{ background: surface }}>
-                <div className="w-full py-2 text-[10px] font-extrabold text-center" style={{ background: accent, color: accentInk, borderRadius: btnRadius }}>View Cart (0)</div>
-              </div>
-
-              {/* Home bar */}
-              <div className="h-5 flex items-center justify-center" style={{ background: surface }}>
-                <div className="w-16 h-1 rounded-full" style={{ background: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' }} />
-              </div>
-            </div>
-
-            {/* Font specimen */}
-            <div className="text-center mt-1">
-              <div className="text-[10px] font-extrabold uppercase tracking-widest mb-1" style={{ color: muted }}>Typography</div>
-              <div className="text-base font-bold" style={{ color: ink, fontFamily: theme.fonts.heading }}>Heading font</div>
-              <div className="text-xs" style={{ color: muted, fontFamily: theme.fonts.body }}>Body text — {theme.fonts.body.split(',')[0].replace(/'/g, '')}</div>
-            </div>
-          </div>
-
-          {/* Token summary */}
-          <div className="mx-6 mb-6 rounded-[20px] overflow-hidden" style={{ border: `1px solid ${border}` }}>
-            {[
-              { label: 'Card radius', value: theme.radius.card },
-              { label: 'Button style', value: theme.buttonStyle },
-              { label: 'Layout', value: theme.grid === 1 ? 'Single column' : theme.grid === 3 ? '3-column grid' : '2-column grid' },
-              { label: 'Hero style', value: theme.hero.replace(/-/g, ' ') },
-            ].map((row, i, arr) => (
-              <div key={row.label} className="flex items-center justify-between px-4 py-3" style={{ background: surface, borderBottom: i < arr.length - 1 ? `1px solid ${border}` : undefined }}>
-                <span className="text-xs font-bold" style={{ color: muted }}>{row.label}</span>
-                <span className="text-xs font-extrabold capitalize" style={{ color: ink }}>{row.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sticky footer CTA */}
-        <div className="px-6 pb-6 pt-4 flex-none" style={{ borderTop: `1px solid ${border}`, background: bg }}>
+          {/* CTA */}
           {isSelected ? (
-            <div className="w-full h-14 rounded-full flex items-center justify-center gap-2 font-extrabold text-sm" style={{ background: `${accent}20`, color: accent, borderRadius: btnRadius === '0px' ? '14px' : btnRadius }}>
-              <Check size={16} /> This style is selected
+            <div
+              className="w-full h-13 flex items-center justify-center gap-2 font-extrabold text-sm rounded-2xl"
+              style={{ background: `${accent}22`, color: accent }}
+            >
+              <Check size={16} /> This style is active
             </div>
           ) : (
             <button
               onClick={() => { onSelect(); onClose(); }}
-              className="w-full h-14 font-extrabold flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
-              style={{ background: accent, color: accentInk, borderRadius: btnRadius === '0px' ? '14px' : btnRadius }}
+              className="w-full h-13 font-extrabold flex items-center justify-center gap-2 shadow-lg hover:opacity-90 active:scale-[.98] transition-all"
+              style={{
+                background: accent,
+                color: accentInk,
+                borderRadius: btnRadius === '0px' ? '14px' : btnRadius,
+                height: 52,
+              }}
             >
               Use this style <ArrowRight size={18} />
             </button>
