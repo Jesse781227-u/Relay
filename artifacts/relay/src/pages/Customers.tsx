@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { MOCK_CUSTOMERS, MOCK_TIMELINE } from '@/lib/data';
-import { Search, Phone, MessageCircle, Mail, MapPin, Plus, Clock, Star, Users, ShoppingBag, Smartphone, Wallet, TrendingUp, X, Edit3, Download, Filter, DollarSign } from 'lucide-react';
+import { Search, Phone, MessageCircle, Mail, MapPin, Plus, Clock, Star, Users, ShoppingBag, Smartphone, Wallet, TrendingUp, X, Edit3, Download, Filter, Banknote } from 'lucide-react';
 
 export default function Customers() {
   const [search, setSearch] = useState('');
@@ -248,7 +248,7 @@ export default function Customers() {
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <div className="bg-card rounded-[24px] p-5 shadow-sm border border-border/50 flex flex-col justify-center">
                   <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <DollarSign size={14} />
+                    <Banknote size={14} />
                     <span className="text-[11px] font-bold uppercase tracking-wider">Total Spent</span>
                   </div>
                   <div className="text-xl font-extrabold text-ink tracking-tight">₦{activeCustomer.spent.toLocaleString()}</div>
