@@ -6,13 +6,14 @@ import {
   ArrowRight, Eye, Palette, Image as ImageIcon, ExternalLink,
   GripVertical, ToggleRight, ToggleLeft, X,
   Tag, Package, Puzzle, Pencil, Trash2, UtensilsCrossed,
-  ChevronDown, Star
+  ChevronDown, Star, MessageCircle
 } from 'lucide-react';
 import { StorefrontTheme, themes } from '../storefront/themes';
+import WhatsAppShopping from './WhatsAppShopping';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'orders' | 'storefront';
+type Tab = 'orders' | 'storefront' | 'whatsapp';
 type StorefrontStep = 'templates' | 'customize' | 'products' | 'preview' | 'launch';
 type ProductsSubTab = 'products' | 'categories' | 'addons';
 
@@ -1234,13 +1235,46 @@ export default function Orders() {
     <div className="h-full flex flex-col overflow-hidden bg-[#F5F6F8]">
 
       {/* Tab switcher */}
-      <div className="flex-none px-6 md:px-10 pt-5 pb-4 border-b bg-white">
-        <div className="flex bg-[#F5F6F8] p-1.5 rounded-full max-w-xs gap-1">
-          <button onClick={() => setActiveTab('orders')} className={`flex-1 py-2.5 px-4 text-sm font-extrabold rounded-full transition-all ${activeTab === 'orders' ? 'bg-white text-ink shadow-sm' : 'text-muted-foreground hover:text-ink'}`} data-testid="tab-orders">
-            <ShoppingCart size={14} className="inline mr-1.5 -mt-0.5" />Orders
+      <div className="flex-none px-4 md:px-8 pt-4 pb-0 border-b bg-white">
+        <div className="flex gap-1 overflow-x-auto pb-0 scrollbar-hide">
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-extrabold border-b-2 transition-all whitespace-nowrap flex-none ${
+              activeTab === 'orders'
+                ? 'border-ink text-ink'
+                : 'border-transparent text-muted-foreground hover:text-ink'
+            }`}
+            data-testid="tab-orders"
+          >
+            <ShoppingCart size={15} /> Orders
           </button>
-          <button onClick={() => setActiveTab('storefront')} className={`flex-1 py-2.5 px-4 text-sm font-extrabold rounded-full transition-all ${activeTab === 'storefront' ? 'bg-white text-ink shadow-sm' : 'text-muted-foreground hover:text-ink'}`} data-testid="tab-storefront">
-            <Store size={14} className="inline mr-1.5 -mt-0.5" />Storefront
+          <button
+            onClick={() => setActiveTab('storefront')}
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-extrabold border-b-2 transition-all whitespace-nowrap flex-none ${
+              activeTab === 'storefront'
+                ? 'border-ink text-ink'
+                : 'border-transparent text-muted-foreground hover:text-ink'
+            }`}
+            data-testid="tab-storefront"
+          >
+            <Store size={15} /> Storefront
+          </button>
+          <button
+            onClick={() => setActiveTab('whatsapp')}
+            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-extrabold border-b-2 transition-all whitespace-nowrap flex-none ${
+              activeTab === 'whatsapp'
+                ? 'text-white rounded-t-xl -mb-px'
+                : 'border-transparent text-muted-foreground hover:text-ink'
+            }`}
+            style={activeTab === 'whatsapp' ? { background: '#25D366', borderColor: '#25D366' } : {}}
+            data-testid="tab-whatsapp"
+          >
+            <MessageCircle size={15} /> WhatsApp Shopping
+            {activeTab !== 'whatsapp' && (
+              <span className="ml-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full text-white" style={{ background: '#25D366' }}>
+                New
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -1248,6 +1282,7 @@ export default function Orders() {
       <div className="flex-1 overflow-hidden">
         {activeTab === 'orders'     && <OrdersKanban />}
         {activeTab === 'storefront' && <StorefrontBuilder />}
+        {activeTab === 'whatsapp'   && <WhatsAppShopping />}
       </div>
     </div>
   );
