@@ -7,7 +7,7 @@ import { Shell } from './components/layout/Shell';
 import Home from './pages/Home';
 import Customers from './pages/Customers';
 import Marketing from './pages/Marketing';
-import Orders from './pages/Orders';
+import Orders from './pages/Shop';
 import More from './pages/More';
 
 const queryClient = new QueryClient();
