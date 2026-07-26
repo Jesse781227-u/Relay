@@ -1,3 +1,4 @@
+// Populated with authentic Nigerian dish photography and custom pricing
 import { SolutionTemplate } from "../solution-template";
 import { StorefrontPreview, type Category, type Product } from "@/components/landing/StorefrontPreview";
 
