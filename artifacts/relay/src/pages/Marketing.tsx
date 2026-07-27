@@ -291,11 +291,11 @@ export default function Marketing() {
 
       {/* Social Distribution */}
       {activeTab === 'social' && (
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
           
           {/* Composer Pane */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-6 pb-32">
+          <div className="w-full lg:flex-1 lg:overflow-y-auto">
+            <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-6 lg:pb-32">
               
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -511,7 +511,7 @@ export default function Marketing() {
           </div>
 
           {/* Preview & Action Pane */}
-          <div className="w-full lg:w-96 flex-none bg-card h-auto lg:h-full flex flex-col p-4 lg:p-8 border-t lg:border-t-0 lg:border-l shadow-[0_-20px_40px_rgba(0,0,0,0.05)] lg:shadow-none rounded-t-[32px] lg:rounded-none">
+          <div className="w-full lg:w-96 flex-none bg-card h-auto lg:h-full flex flex-col p-4 lg:p-8 pb-32 md:pb-32 lg:pb-8 lg:overflow-y-auto border-t lg:border-t-0 lg:border-l shadow-[0_-20px_40px_rgba(0,0,0,0.05)] lg:shadow-none rounded-t-[32px] lg:rounded-none">
             
             <div className="hidden lg:block flex-1 mb-8">
               <h3 className="text-sm font-bold text-muted-foreground mb-4">Live Preview</h3>
@@ -596,11 +596,11 @@ export default function Marketing() {
 
       {/* Push Notifications */}
       {activeTab === 'push' && (
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
           
           {/* Campaign Builder Pane */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-6 pb-32">
+          <div className="w-full lg:flex-1 lg:overflow-y-auto">
+            <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-6 lg:pb-32">
               
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -900,7 +900,7 @@ export default function Marketing() {
           </div>
 
           {/* Preview & Action Pane */}
-          <div className="w-full lg:w-96 flex-none bg-card h-auto lg:h-full flex flex-col p-4 lg:p-8 border-t lg:border-t-0 lg:border-l shadow-[0_-20px_40px_rgba(0,0,0,0.05)] lg:shadow-none rounded-t-[32px] lg:rounded-none">
+          <div className="w-full lg:w-96 flex-none bg-card h-auto lg:h-full flex flex-col p-4 lg:p-8 pb-32 md:pb-32 lg:pb-8 lg:overflow-y-auto border-t lg:border-t-0 lg:border-l shadow-[0_-20px_40px_rgba(0,0,0,0.05)] lg:shadow-none rounded-t-[32px] lg:rounded-none">
             
             <div className="hidden lg:block flex-1 mb-8">
               <h3 className="text-sm font-bold text-muted-foreground mb-4">Notification Preview</h3>
