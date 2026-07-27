@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { StorefrontTheme, themes } from '../storefront/themes';
 import WhatsAppShopping from './WhatsAppShopping';
+import WhatsAppShoppingExperience from './WhatsAppShoppingExperience';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1282,7 +1283,7 @@ export default function Orders() {
       <div className="flex-1 overflow-hidden">
         {activeTab === 'orders'     && <OrdersKanban />}
         {activeTab === 'storefront' && <StorefrontBuilder />}
-        {activeTab === 'whatsapp'   && <WhatsAppShopping />}
+        {activeTab === 'whatsapp'   && <WhatsAppShoppingExperience />}
       </div>
     </div>
   );
