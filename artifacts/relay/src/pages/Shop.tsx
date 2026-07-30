@@ -11,6 +11,8 @@ import {
 import { StorefrontTheme, themes } from '../storefront/themes';
 import WhatsAppShopping from './WhatsAppShopping';
 import WhatsAppShoppingExperience from './WhatsAppShoppingExperience';
+import OnboardingWizard from './whatsapp-onboarding/OnboardingWizard';
+import { useOnboardingStore } from './whatsapp-onboarding/useOnboardingStore';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1231,6 +1233,8 @@ function StorefrontBuilder() {
 
 export default function Orders() {
   const [activeTab, setActiveTab] = useState<Tab>('orders');
+  const { data: onboardingData, publish: publishStore } = useOnboardingStore();
+  const waStorePublished = onboardingData.published;
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-[#F5F6F8]">
@@ -1283,7 +1287,11 @@ export default function Orders() {
       <div className="flex-1 overflow-hidden">
         {activeTab === 'orders'     && <OrdersKanban />}
         {activeTab === 'storefront' && <StorefrontBuilder />}
-        {activeTab === 'whatsapp'   && <WhatsAppShoppingExperience />}
+        {activeTab === 'whatsapp'   && (
+          waStorePublished
+            ? <WhatsAppShoppingExperience />
+            : <OnboardingWizard onPublished={() => publishStore()} />
+        )}
       </div>
     </div>
   );
